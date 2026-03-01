@@ -1,4 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: versions/001_create_bookslist.sql
-      relativeToChangelogFile: true

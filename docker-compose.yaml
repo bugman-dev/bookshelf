@@ -17,33 +17,11 @@ services:
       retries: 5
     restart: unless-stopped
 
-  liquibase:
-    build:
-      context: ./liquibase
-      dockerfile: Dockerfile
-    image: bookshelf-liquibase:local
-    container_name: bookshelf-liquibase
-    depends_on:
-      postgres:
-        condition: service_healthy
-    env_file:
-      - .env
-    environment:
-      LIQUIBASE_COMMAND_UPDATE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
-      LIQUIBASE_COMMAND_UPDATE_USERNAME: ${POSTGRES_USER}
-      LIQUIBASE_COMMAND_UPDATE_PASSWORD: ${POSTGRES_PASSWORD}
-      LIQUIBASE_COMMAND_UPDATE_CHANGELOG_FILE: /liquibase/changelog/db.changelog-master.yaml
-    volumes:
-      - ./liquibase/changelog:/liquibase/changelog
-    command: update
-    restart: "no"
-
   hasura:
-    image: hasura/graphql-engine:v2.40.0
+    image: hasura/graphql-engine:v2.40.0.cli-migrations-v3
     container_name: hasura
     depends_on:
-      liquibase:
-        condition: service_completed_successfully
+      - postgres
     ports:
       - "8080:8080"
     env_file:
@@ -53,6 +31,9 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DEV_MODE: "true"
+    volumes:
+      - "/home/bugman/Desktop/Project Bookshelf/hasura/migrations:/hasura-migrations"
+      - "/home/bugman/Desktop/Project Bookshelf/hasura/metadata:/hasura-metadata"
     restart: unless-stopped
 
 volumes:
