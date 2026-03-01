@@ -1,0 +1,59 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: bookshelf-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  liquibase:
+    build:
+      context: ./liquibase
+      dockerfile: Dockerfile
+    image: bookshelf-liquibase:local
+    container_name: bookshelf-liquibase
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      LIQUIBASE_COMMAND_UPDATE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      LIQUIBASE_COMMAND_UPDATE_USERNAME: ${POSTGRES_USER}
+      LIQUIBASE_COMMAND_UPDATE_PASSWORD: ${POSTGRES_PASSWORD}
+      LIQUIBASE_COMMAND_UPDATE_CHANGELOG_FILE: /liquibase/changelog/db.changelog-master.yaml
+    volumes:
+      - ./liquibase/changelog:/liquibase/changelog
+    command: update
+    restart: "no"
+
+  hasura:
+    image: hasura/graphql-engine:v2.40.0
+    container_name: hasura
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
+    ports:
+      - "8080:8080"
+    env_file:
+    - .env
+    environment:
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_DEV_MODE: "true"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

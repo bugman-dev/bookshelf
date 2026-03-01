@@ -1,0 +1,18 @@
+--liquibase formatted sql
+--changeset liquibase:001_create_bookslist
+CREATE TABLE "public"."bookslist" (
+  "id_" uuid NOT NULL,
+  "isbn_" varchar NOT NULL,
+  "name_" text NOT NULL,
+  "author_" text NOT NULL,
+  "genre_" text NOT NULL,
+  "publisher_" text NOT NULL,
+  "publication_year_" integer NOT NULL,
+  "format_" varchar NOT NULL,
+  "description_" text,
+  "rating_" int4,
+  "synopsis_" text,
+  PRIMARY KEY ("id_"),
+  UNIQUE ("isbn_"),
+  CONSTRAINT "rating_range" CHECK (rating_ BETWEEN 0 AND 5)
+);
