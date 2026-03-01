@@ -32,8 +32,8 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_DEV_MODE: "true"
     volumes:
-      - "/home/bugman/Desktop/Project Bookshelf/hasura/migrations:/hasura-migrations"
-      - "/home/bugman/Desktop/Project Bookshelf/hasura/metadata:/hasura-metadata"
+      - "./hasura/migrations:/hasura-migrations"
+      - "./hasura/metadata:/hasura-metadata"
     restart: unless-stopped
 
 volumes:
