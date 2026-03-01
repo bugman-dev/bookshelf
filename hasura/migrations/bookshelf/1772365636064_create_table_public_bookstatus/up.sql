@@ -1,0 +1,1 @@
+CREATE TABLE "public"."bookstatus" ("bookid_" text NOT NULL, "status" text NOT NULL DEFAULT 'UN_READ', PRIMARY KEY ("bookid_") , CONSTRAINT "status" CHECK (status IN ('READ','UN_READ','INCOMPLETE','IN_PROGRESS')));
