@@ -1,3 +1,13 @@
 table:
   name: bookslist
   schema: public
+object_relationships:
+  - name: readstatus
+    using:
+      manual_configuration:
+        column_mapping:
+          id_: bookid_
+        insertion_order: null
+        remote_table:
+          name: bookstatus
+          schema: public
