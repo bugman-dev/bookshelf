@@ -1,3 +1,5 @@
+- "!include public_authors.yaml"
+- "!include public_book_tags.yaml"
 - "!include public_bookslist.yaml"
 - "!include public_bookstatus.yaml"
 - "!include public_genre.yaml"
