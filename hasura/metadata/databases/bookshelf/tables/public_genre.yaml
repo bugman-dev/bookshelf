@@ -1,0 +1,11 @@
+table:
+  name: genre
+  schema: public
+array_relationships:
+  - name: sub_genres
+    using:
+      foreign_key_constraint_on:
+        column: genrecode_
+        table:
+          name: sub_genre
+          schema: public

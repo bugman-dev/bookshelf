@@ -1,2 +1,4 @@
 - "!include public_bookslist.yaml"
 - "!include public_bookstatus.yaml"
+- "!include public_genre.yaml"
+- "!include public_sub_genre.yaml"

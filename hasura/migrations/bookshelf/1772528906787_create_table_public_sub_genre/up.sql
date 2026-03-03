@@ -1,0 +1,1 @@
+CREATE TABLE "public"."sub_genre" ("code_" text NOT NULL, "name_" text NOT NULL, "genrecode_" text NOT NULL, "isactive_" boolean NOT NULL DEFAULT TRUE, PRIMARY KEY ("code_") , FOREIGN KEY ("genrecode_") REFERENCES "public"."genre"("code_") ON UPDATE restrict ON DELETE cascade, UNIQUE ("code_"));
